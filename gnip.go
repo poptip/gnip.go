@@ -4,7 +4,7 @@ import (
 	bytelib "bytes"
 	"encoding/json"
 	"fmt"
-  "io/ioutil"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -25,21 +25,21 @@ type Rule struct {
 }
 
 type Client struct {
-	username    string
-	password    string
-	HttpClient  http.Client
-  streamUrl   string
-  rulesUrl    string
+	username   string
+	password   string
+	HttpClient http.Client
+	streamUrl  string
+	rulesUrl   string
 }
 
 func NewClient(un, pw, account string) *Client {
-  c := &Client{}
-  c.username = un;
-  c.password = pw;
-  c.streamUrl = fmt.Sprintf("%s/%s/%s",
-    streamBaseUrl, account, streamSuffix)
-  c.rulesUrl = fmt.Sprintf("%s/%s/%s",
-    rulesBaseUrl, account, rulesSuffix)
+	c := &Client{}
+	c.username = un
+	c.password = pw
+	c.streamUrl = fmt.Sprintf("%s/%s/%s",
+		streamBaseUrl, account, streamSuffix)
+	c.rulesUrl = fmt.Sprintf("%s/%s/%s",
+		rulesBaseUrl, account, rulesSuffix)
 	return c
 }
 
@@ -65,16 +65,16 @@ func (c *Client) GetAllActiveRules() ([]Rule, error) {
 		return nil, err
 	}
 
-  defer res.Body.Close()
-  body, err := ioutil.ReadAll(res.Body)
-  if err != nil {
-    return nil, err
-  }
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
 
-  var rules Rules
-  if err = json.Unmarshal(body, &rules); err != nil {
-    return nil, err
-  }
+	var rules Rules
+	if err = json.Unmarshal(body, &rules); err != nil {
+		return nil, err
+	}
 	return rules.Rules, nil
 }
 
@@ -92,7 +92,7 @@ func (c *Client) AddRules(rules []Rule) error {
 
 	req.SetBasicAuth(c.username, c.password)
 	_, err = c.HttpClient.Do(req)
-  return err
+	return err
 }
 
 func (c *Client) RemoveRules(rules []Rule) error {
@@ -109,5 +109,5 @@ func (c *Client) RemoveRules(rules []Rule) error {
 
 	req.SetBasicAuth(c.username, c.password)
 	_, err = c.HttpClient.Do(req)
-  return err
+	return err
 }
