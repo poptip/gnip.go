@@ -1,7 +1,7 @@
 package gnip
 
 import (
-	bytelib "bytes"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -15,14 +15,6 @@ const (
 	rulesSuffix   = "publishers/twitter/streams/track/Production/rules.json"
 	bufferSize    = 33554432
 )
-
-type Rules struct {
-	Rules []Rule `json:"rules"`
-}
-
-type Rule struct {
-	Value string `json:"value"`
-}
 
 type Client struct {
 	username   string
@@ -80,12 +72,12 @@ func (c *Client) GetAllActiveRules() ([]Rule, error) {
 
 func (c *Client) AddRules(rules []Rule) error {
 	payload := Rules{Rules: rules}
-	bytes, err := json.Marshal(payload)
+	b, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", c.rulesUrl, bytelib.NewBuffer(bytes))
+	req, err := http.NewRequest("POST", c.rulesUrl, bytes.NewBuffer(b))
 	if err != nil {
 		return err
 	}
@@ -97,12 +89,12 @@ func (c *Client) AddRules(rules []Rule) error {
 
 func (c *Client) RemoveRules(rules []Rule) error {
 	payload := &Rules{Rules: rules}
-	bytes, err := json.Marshal(payload)
+	b, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
 
-	req, err := http.NewRequest("DELETE", c.rulesUrl, bytelib.NewBuffer(bytes))
+	req, err := http.NewRequest("DELETE", c.rulesUrl, bytes.NewBuffer(b))
 	if err != nil {
 		return err
 	}

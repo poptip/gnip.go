@@ -1,11 +1,11 @@
-# go-gnip
+# gnip
 
 Golang package for gnip.
 
 # Install
 
 ```sh
-go get github.com/poptip.com/go-gnip
+go get github.com/poptip.com/gnip.go
 ```
 
 # Usage
@@ -14,7 +14,7 @@ go get github.com/poptip.com/go-gnip
 package main
 
 import (
-  "github.com/poptip/go-gnip"
+  "github.com/poptip/gnip.go"
 )
 
 func main() {
