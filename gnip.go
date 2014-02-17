@@ -9,19 +9,20 @@ import (
 )
 
 const (
-	streamBaseUrl = "https://stream.gnip.com:443/accounts"
-	streamSuffix  = "publishers/twitter/streams/track/Production.json"
-	rulesBaseUrl  = "https://api.gnip.com:443/accounts"
-	rulesSuffix   = "publishers/twitter/streams/track/Production/rules.json"
-	bufferSize    = 33554432
+	streamBaseUrl     = "https://stream.gnip.com:443/accounts"
+	streamSuffix      = "publishers/twitter/streams/track/Production.json"
+	replayRulesSuffix = "publishers/twitter/replay/track/Production/rules.json"
+	rulesBaseUrl      = "https://api.gnip.com:443/accounts"
+	rulesSuffix       = "publishers/twitter/streams/track/Production/rules.json"
+	bufferSize        = 33554432
 )
 
 type Client struct {
-	username   string
-	password   string
-	HttpClient http.Client
-	streamUrl  string
-	rulesUrl   string
+	username                 string
+	password                 string
+	HttpClient               http.Client
+	streamUrl                string
+	rulesUrl, replayRulesUrl string
 }
 
 func NewClient(un, pw, account string) *Client {
@@ -30,6 +31,7 @@ func NewClient(un, pw, account string) *Client {
 	c.password = pw
 	c.streamUrl = fmt.Sprintf("%s/%s/%s",
 		streamBaseUrl, account, streamSuffix)
+	c.replayRulesUrl = fmt.Sprintf("%s/%s/%s", rulesBaseUrl, account, replayRulesSuffix)
 	c.rulesUrl = fmt.Sprintf("%s/%s/%s",
 		rulesBaseUrl, account, rulesSuffix)
 	return c
@@ -78,6 +80,23 @@ func (c *Client) AddRules(rules []Rule) error {
 	}
 
 	req, err := http.NewRequest("POST", c.rulesUrl, bytes.NewBuffer(b))
+	if err != nil {
+		return err
+	}
+
+	req.SetBasicAuth(c.username, c.password)
+	_, err = c.HttpClient.Do(req)
+	return err
+}
+
+func (c *Client) AddRulesToReplay(rules []Rule) error {
+	payload := Rules{Rules: rules}
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", c.replayRulesUrl, bytes.NewBuffer(b))
 	if err != nil {
 		return err
 	}
