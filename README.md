@@ -5,7 +5,7 @@ Golang package for gnip.
 # Install
 
 ```sh
-go get github.com/poptip.com/gnip.go
+go get github.com/poptip/gnip.go
 ```
 
 # Usage
